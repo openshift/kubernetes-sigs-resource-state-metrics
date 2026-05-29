@@ -24,6 +24,7 @@ import (
 
 	"github.com/kubernetes-sigs/resource-state-metrics/pkg/metricutil"
 	"github.com/kubernetes-sigs/resource-state-metrics/pkg/options"
+	startime "go.starlark.net/lib/time"
 	"go.starlark.net/starlark"
 	"go.starlark.net/syntax"
 	"k8s.io/apimachinery/pkg/api/resource"
@@ -127,6 +128,9 @@ func (sr *StarlarkResolver) resolveWithSteps(thread *starlark.Thread, obj map[st
 		"metric":            starlark.NewBuiltin("metric", metricBuiltin),
 		"family":            starlark.NewBuiltin("family", familyBuiltin),
 		"label_prefix":      starlark.NewBuiltin("label_prefix", labelPrefixBuiltin),
+		// time module provides time.now(), time.parse_time(s), durations, etc.
+		// See https://github.com/google/starlark-go/blob/master/lib/time/time.go.
+		"time": startime.Module,
 	}
 
 	objValue, err := goToStarlark(obj)

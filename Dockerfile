@@ -1,4 +1,11 @@
-FROM golang:1.25 AS builder
+# BUILDPLATFORM/TARGETOS/TARGETARCH are populated automatically by BuildKit.
+# Declare defaults so plain `docker build` (BuildKit disabled, no buildx) does
+# not expand them empty and feed `--platform=` / `GOOS= GOARCH=` downstream.
+ARG BUILDPLATFORM=linux/amd64
+FROM --platform=$BUILDPLATFORM golang:1.25 AS builder
+
+ARG TARGETOS=linux
+ARG TARGETARCH=amd64
 
 WORKDIR /
 
@@ -8,7 +15,10 @@ RUN go mod download
 
 COPY . .
 
-RUN make resource-state-metrics
+# -B forces a rebuild: the `resource-state-metrics` target is file-based, not
+# phony, so a binary copied in from the build context (no .dockerignore) would
+# otherwise satisfy the timestamp check and ignore GOOS/GOARCH.
+RUN CGO_ENABLED=0 GOOS=$TARGETOS GOARCH=$TARGETARCH make -B resource-state-metrics
 
 FROM ubuntu:24.04
 
