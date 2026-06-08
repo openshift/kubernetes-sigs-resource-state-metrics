@@ -1,6 +1,19 @@
-# See the OWNERS docs at https://go.k8s.io/owners
+component: "Monitoring"
+
+reviewers:
+- danielmellado
+- jan--f
+- machine424
+- marioferh
+- rexagod
+- simonpasquier
+- slashpai
 
 approvers:
-  - jan--f
-  - simonpasquier
-  - rexagod
+- danielmellado
+- jan--f
+- machine424
+- marioferh
+- rexagod
+- simonpasquier
+- slashpai
